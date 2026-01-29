@@ -14,16 +14,1132 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      artworks: {
+        Row: {
+          bookpi_hash: string | null
+          created_at: string | null
+          description: string | null
+          edition_number: number | null
+          edition_total: number | null
+          gallery_id: string | null
+          id: string
+          is_auction: boolean | null
+          is_for_sale: boolean | null
+          media_url: string
+          price_msr: number | null
+          thumbnail_url: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          bookpi_hash?: string | null
+          created_at?: string | null
+          description?: string | null
+          edition_number?: number | null
+          edition_total?: number | null
+          gallery_id?: string | null
+          id?: string
+          is_auction?: boolean | null
+          is_for_sale?: boolean | null
+          media_url: string
+          price_msr?: number | null
+          thumbnail_url?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          bookpi_hash?: string | null
+          created_at?: string | null
+          description?: string | null
+          edition_number?: number | null
+          edition_total?: number | null
+          gallery_id?: string | null
+          id?: string
+          is_auction?: boolean | null
+          is_for_sale?: boolean | null
+          media_url?: string
+          price_msr?: number | null
+          thumbnail_url?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artworks_gallery_id_fkey"
+            columns: ["gallery_id"]
+            isOneToOne: false
+            referencedRelation: "galleries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      auctions: {
+        Row: {
+          artwork_id: string
+          bid_count: number | null
+          created_at: string | null
+          current_price_msr: number
+          ends_at: string
+          highest_bidder_id: string | null
+          id: string
+          is_active: boolean | null
+          reserve_price_msr: number | null
+          seller_id: string
+          starting_price_msr: number
+          starts_at: string | null
+        }
+        Insert: {
+          artwork_id: string
+          bid_count?: number | null
+          created_at?: string | null
+          current_price_msr: number
+          ends_at: string
+          highest_bidder_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          reserve_price_msr?: number | null
+          seller_id: string
+          starting_price_msr: number
+          starts_at?: string | null
+        }
+        Update: {
+          artwork_id?: string
+          bid_count?: number | null
+          created_at?: string | null
+          current_price_msr?: number
+          ends_at?: string
+          highest_bidder_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          reserve_price_msr?: number | null
+          seller_id?: string
+          starting_price_msr?: number
+          starts_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auctions_artwork_id_fkey"
+            columns: ["artwork_id"]
+            isOneToOne: false
+            referencedRelation: "artworks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bids: {
+        Row: {
+          amount_msr: number
+          auction_id: string
+          created_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          amount_msr: number
+          auction_id: string
+          created_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          amount_msr?: number
+          auction_id?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookmarks: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookmarks_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookpi_ledger: {
+        Row: {
+          action: string
+          actor_id: string | null
+          block_number: number | null
+          data_hash: string
+          entity_id: string
+          entity_type: string
+          id: string
+          merkle_root: string | null
+          prev_hash: string | null
+          signature: string | null
+          timestamp: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          block_number?: number | null
+          data_hash: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          merkle_root?: string | null
+          prev_hash?: string | null
+          signature?: string | null
+          timestamp?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          block_number?: number | null
+          data_hash?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          merkle_root?: string | null
+          prev_hash?: string | null
+          signature?: string | null
+          timestamp?: string | null
+        }
+        Relationships: []
+      }
+      channel_members: {
+        Row: {
+          channel_id: string
+          id: string
+          joined_at: string | null
+          last_read_at: string | null
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          channel_id: string
+          id?: string
+          joined_at?: string | null
+          last_read_at?: string | null
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          channel_id?: string
+          id?: string
+          joined_at?: string | null
+          last_read_at?: string | null
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "channel_members_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      channels: {
+        Row: {
+          avatar_url: string | null
+          channel_type: Database["public"]["Enums"]["channel_type"] | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_verified: boolean | null
+          member_count: number | null
+          name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          channel_type?: Database["public"]["Enums"]["channel_type"] | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_verified?: boolean | null
+          member_count?: number | null
+          name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          channel_type?: Database["public"]["Enums"]["channel_type"] | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_verified?: boolean | null
+          member_count?: number | null
+          name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      comments: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          like_count: number | null
+          parent_comment_id: string | null
+          post_id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          like_count?: number | null
+          parent_comment_id?: string | null
+          post_id: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          like_count?: number | null
+          parent_comment_id?: string | null
+          post_id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          duration_hours: number | null
+          enrollment_count: number | null
+          id: string
+          instructor_id: string
+          is_free: boolean | null
+          is_published: boolean | null
+          level: string | null
+          price_msr: number | null
+          rating: number | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_hours?: number | null
+          enrollment_count?: number | null
+          id?: string
+          instructor_id: string
+          is_free?: boolean | null
+          is_published?: boolean | null
+          level?: string | null
+          price_msr?: number | null
+          rating?: number | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          duration_hours?: number | null
+          enrollment_count?: number | null
+          id?: string
+          instructor_id?: string
+          is_free?: boolean | null
+          is_published?: boolean | null
+          level?: string | null
+          price_msr?: number | null
+          rating?: number | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      enrollments: {
+        Row: {
+          completed_at: string | null
+          completed_lessons: string[] | null
+          course_id: string
+          enrolled_at: string | null
+          id: string
+          progress: number | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_lessons?: string[] | null
+          course_id: string
+          enrolled_at?: string | null
+          id?: string
+          progress?: number | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_lessons?: string[] | null
+          course_id?: string
+          enrolled_at?: string | null
+          id?: string
+          progress?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      follows: {
+        Row: {
+          created_at: string | null
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      galleries: {
+        Row: {
+          artwork_count: number | null
+          cover_url: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_public: boolean | null
+          name: string
+          user_id: string
+        }
+        Insert: {
+          artwork_count?: number | null
+          cover_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name: string
+          user_id: string
+        }
+        Update: {
+          artwork_count?: number | null
+          cover_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      hashtags: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_count: number | null
+          tag: string
+          trend_score: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_count?: number | null
+          tag: string
+          trend_score?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_count?: number | null
+          tag?: string
+          trend_score?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      isabella_conversations: {
+        Row: {
+          context: Json | null
+          created_at: string | null
+          id: string
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          context?: Json | null
+          created_at?: string | null
+          id?: string
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          context?: Json | null
+          created_at?: string | null
+          id?: string
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      isabella_messages: {
+        Row: {
+          audio_url: string | null
+          content: string
+          conversation_id: string
+          created_at: string | null
+          id: string
+          role: string
+        }
+        Insert: {
+          audio_url?: string | null
+          content: string
+          conversation_id: string
+          created_at?: string | null
+          id?: string
+          role: string
+        }
+        Update: {
+          audio_url?: string | null
+          content?: string
+          conversation_id?: string
+          created_at?: string | null
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "isabella_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "isabella_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_bridges: {
+        Row: {
+          connection_type: string | null
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          from_concept: string
+          id: string
+          title: string
+          to_concept: string
+          upvotes: number | null
+        }
+        Insert: {
+          connection_type?: string | null
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          from_concept: string
+          id?: string
+          title: string
+          to_concept: string
+          upvotes?: number | null
+        }
+        Update: {
+          connection_type?: string | null
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          from_concept?: string
+          id?: string
+          title?: string
+          to_concept?: string
+          upvotes?: number | null
+        }
+        Relationships: []
+      }
+      lessons: {
+        Row: {
+          content: string | null
+          course_id: string
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          is_free_preview: boolean | null
+          order_index: number
+          title: string
+          video_url: string | null
+        }
+        Insert: {
+          content?: string | null
+          course_id: string
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_free_preview?: boolean | null
+          order_index: number
+          title: string
+          video_url?: string | null
+        }
+        Update: {
+          content?: string | null
+          course_id?: string
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_free_preview?: boolean | null
+          order_index?: number
+          title?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          channel_id: string
+          content: string | null
+          created_at: string | null
+          id: string
+          is_edited: boolean | null
+          media_urls: string[] | null
+          read_by: string[] | null
+          reply_to_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          channel_id: string
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_edited?: boolean | null
+          media_urls?: string[] | null
+          read_by?: string[] | null
+          reply_to_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          channel_id?: string
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_edited?: boolean | null
+          media_urls?: string[] | null
+          read_by?: string[] | null
+          reply_to_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_reply_to_id_fkey"
+            columns: ["reply_to_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          reference_id: string | null
+          reference_type: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          reference_id?: string | null
+          reference_type?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          reference_id?: string | null
+          reference_type?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      posts: {
+        Row: {
+          bookpi_hash: string | null
+          comment_count: number | null
+          content: string | null
+          content_type: Database["public"]["Enums"]["content_type"] | null
+          created_at: string | null
+          hashtags: string[] | null
+          id: string
+          is_pinned: boolean | null
+          is_reel: boolean | null
+          is_stream: boolean | null
+          like_count: number | null
+          media_urls: string[] | null
+          mentions: string[] | null
+          parent_post_id: string | null
+          share_count: number | null
+          thumbnail_url: string | null
+          updated_at: string | null
+          user_id: string
+          view_count: number | null
+        }
+        Insert: {
+          bookpi_hash?: string | null
+          comment_count?: number | null
+          content?: string | null
+          content_type?: Database["public"]["Enums"]["content_type"] | null
+          created_at?: string | null
+          hashtags?: string[] | null
+          id?: string
+          is_pinned?: boolean | null
+          is_reel?: boolean | null
+          is_stream?: boolean | null
+          like_count?: number | null
+          media_urls?: string[] | null
+          mentions?: string[] | null
+          parent_post_id?: string | null
+          share_count?: number | null
+          thumbnail_url?: string | null
+          updated_at?: string | null
+          user_id: string
+          view_count?: number | null
+        }
+        Update: {
+          bookpi_hash?: string | null
+          comment_count?: number | null
+          content?: string | null
+          content_type?: Database["public"]["Enums"]["content_type"] | null
+          created_at?: string | null
+          hashtags?: string[] | null
+          id?: string
+          is_pinned?: boolean | null
+          is_reel?: boolean | null
+          is_stream?: boolean | null
+          like_count?: number | null
+          media_urls?: string[] | null
+          mentions?: string[] | null
+          parent_post_id?: string | null
+          share_count?: number | null
+          thumbnail_url?: string | null
+          updated_at?: string | null
+          user_id?: string
+          view_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_parent_post_id_fkey"
+            columns: ["parent_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          banner_url: string | null
+          bio: string | null
+          birthdate: string | null
+          created_at: string | null
+          display_name: string
+          follower_count: number | null
+          following_count: number | null
+          id: string
+          is_public: boolean | null
+          location: string | null
+          nvida_hash: string | null
+          post_count: number | null
+          updated_at: string | null
+          user_id: string
+          username: string
+          verification_status:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          website: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          banner_url?: string | null
+          bio?: string | null
+          birthdate?: string | null
+          created_at?: string | null
+          display_name: string
+          follower_count?: number | null
+          following_count?: number | null
+          id?: string
+          is_public?: boolean | null
+          location?: string | null
+          nvida_hash?: string | null
+          post_count?: number | null
+          updated_at?: string | null
+          user_id: string
+          username: string
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          website?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          banner_url?: string | null
+          bio?: string | null
+          birthdate?: string | null
+          created_at?: string | null
+          display_name?: string
+          follower_count?: number | null
+          following_count?: number | null
+          id?: string
+          is_public?: boolean | null
+          location?: string | null
+          nvida_hash?: string | null
+          post_count?: number | null
+          updated_at?: string | null
+          user_id?: string
+          username?: string
+          verification_status?:
+            | Database["public"]["Enums"]["verification_status"]
+            | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          bio: string | null
+          created_at: string | null
+          id: string
+          is_founder: boolean | null
+          linkedin_url: string | null
+          name: string
+          order_index: number | null
+          photo_url: string | null
+          title: string
+          twitter_url: string | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string | null
+          id?: string
+          is_founder?: boolean | null
+          linkedin_url?: string | null
+          name: string
+          order_index?: number | null
+          photo_url?: string | null
+          title: string
+          twitter_url?: string | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string | null
+          id?: string
+          is_founder?: boolean | null
+          linkedin_url?: string | null
+          name?: string
+          order_index?: number | null
+          photo_url?: string | null
+          title?: string
+          twitter_url?: string | null
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount_msr: number
+          blockchain_hash: string | null
+          bookpi_hash: string
+          created_at: string | null
+          description: string | null
+          from_user_id: string | null
+          id: string
+          reference_id: string | null
+          to_user_id: string | null
+          transaction_type: Database["public"]["Enums"]["transaction_type"]
+        }
+        Insert: {
+          amount_msr: number
+          blockchain_hash?: string | null
+          bookpi_hash: string
+          created_at?: string | null
+          description?: string | null
+          from_user_id?: string | null
+          id?: string
+          reference_id?: string | null
+          to_user_id?: string | null
+          transaction_type: Database["public"]["Enums"]["transaction_type"]
+        }
+        Update: {
+          amount_msr?: number
+          blockchain_hash?: string | null
+          bookpi_hash?: string
+          created_at?: string | null
+          description?: string | null
+          from_user_id?: string | null
+          id?: string
+          reference_id?: string | null
+          to_user_id?: string | null
+          transaction_type?: Database["public"]["Enums"]["transaction_type"]
+        }
+        Relationships: []
+      }
+      trending_topics: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          expires_at: string | null
+          hashtag_id: string | null
+          id: string
+          rank: number | null
+          region: string | null
+          score: number | null
+          topic: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          hashtag_id?: string | null
+          id?: string
+          rank?: number | null
+          region?: string | null
+          score?: number | null
+          topic?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          hashtag_id?: string | null
+          id?: string
+          rank?: number | null
+          region?: string | null
+          score?: number | null
+          topic?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trending_topics_hashtag_id_fkey"
+            columns: ["hashtag_id"]
+            isOneToOne: false
+            referencedRelation: "hashtags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wallets: {
+        Row: {
+          balance_msr: number | null
+          created_at: string | null
+          id: string
+          locked_msr: number | null
+          total_earned_msr: number | null
+          total_spent_msr: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          balance_msr?: number | null
+          created_at?: string | null
+          id?: string
+          locked_msr?: number | null
+          total_earned_msr?: number | null
+          total_spent_msr?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          balance_msr?: number | null
+          created_at?: string | null
+          id?: string
+          locked_msr?: number | null
+          total_earned_msr?: number | null
+          total_spent_msr?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "user" | "creator" | "moderator" | "admin" | "guardian"
+      channel_type: "public" | "private" | "group" | "broadcast"
+      content_type:
+        | "text"
+        | "image"
+        | "video"
+        | "audio"
+        | "music"
+        | "reel"
+        | "stream"
+        | "artwork"
+        | "document"
+      transaction_type:
+        | "msr_transfer"
+        | "auction_bid"
+        | "subscription"
+        | "donation"
+        | "reward"
+      verification_status: "pending" | "verified" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +1266,28 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["user", "creator", "moderator", "admin", "guardian"],
+      channel_type: ["public", "private", "group", "broadcast"],
+      content_type: [
+        "text",
+        "image",
+        "video",
+        "audio",
+        "music",
+        "reel",
+        "stream",
+        "artwork",
+        "document",
+      ],
+      transaction_type: [
+        "msr_transfer",
+        "auction_bid",
+        "subscription",
+        "donation",
+        "reward",
+      ],
+      verification_status: ["pending", "verified", "rejected"],
+    },
   },
 } as const
