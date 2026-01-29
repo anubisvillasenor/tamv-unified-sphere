@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./useAuth";
 
@@ -28,6 +28,7 @@ export interface IsabellaMeta {
   governanceFlag: GovernanceFlag;
   hitlRequired: boolean;
   aignScore?: number;
+  isCreator?: boolean;
 }
 
 export interface IsabellaMessage {
@@ -38,54 +39,107 @@ export interface IsabellaMessage {
   created_at: string;
 }
 
-const defaultMeta = (): IsabellaMeta => ({
-  sessionId: crypto.randomUUID(),
+// ==============================
+// Constantes de control
+// ==============================
+
+const MAX_REPLY_CHARS = 500;
+
+const CREATOR_CODEWORDS = [
+  "ANUBIS-V-PRIMUS",
+  "TAMV-KERNEL-AUTHOR",
+];
+
+const ISABELLA_STYLE = {
+  maxChars: MAX_REPLY_CHARS,
+  forbidEmojis: true,
+  tone: "assertive_professional",
+  audience: "founders_and_operators",
+};
+
+// ==============================
+// Utilidades
+// ==============================
+
+const createSessionId = () => crypto.randomUUID();
+
+const isCreatorMessage = (text: string): boolean =>
+  CREATOR_CODEWORDS.some((code) => text.includes(code));
+
+const sanitizeAssistantMessage = (raw?: unknown): string => {
+  if (typeof raw !== "string") {
+    return "Transmisión recibida por Isabella.";
+  }
+
+  const noEmojis = raw.replace(
+    /([\u231A-\u231B\u23E9-\u23EC\u23F0\u23F3\u25FD-\u25FE\u2600-\u27BF\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDD00-\uDFFF])/g,
+    ""
+  );
+
+  return noEmojis.slice(0, MAX_REPLY_CHARS).trim();
+};
+
+const defaultMeta = (sessionId: string): IsabellaMeta => ({
+  sessionId,
   conversationHash: "genesis",
   ethicalState: "normal",
   riskLevel: "low",
   layer: "COGNITIVE",
   governanceFlag: "none",
   hitlRequired: false,
+  aignScore: undefined,
+  isCreator: false,
 });
 
 // ==============================
-// Hook civilizatorio principal
+// Hook principal
 // ==============================
 
 export const useIsabella = () => {
   const { user } = useAuth();
 
+  const initialSessionId = createSessionId();
+  const sessionIdRef = useRef<string>(initialSessionId);
+
   const [messages, setMessages] = useState<IsabellaMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
-  const [meta, setMeta] = useState<IsabellaMeta>(defaultMeta());
+  const [meta, setMeta] = useState<IsabellaMeta>(() =>
+    defaultMeta(initialSessionId)
+  );
 
   // ==============================
   // Conversación
   // ==============================
 
-  const startConversation = async () => {
+  const startConversation = useCallback(async () => {
     if (!user) return null;
 
     try {
       const { data, error } = await supabase
         .from("isabella_conversations")
-        .insert({ user_id: user.id, title: "Nueva conversación civilizatoria" })
+        .insert({
+          user_id: user.id,
+          title: "Nueva conversación civilizatoria",
+        })
         .select()
         .single();
 
       if (error) throw error;
 
+      const newSessionId = createSessionId();
+      sessionIdRef.current = newSessionId;
+
       setConversationId(data.id);
       setMessages([]);
-      setMeta(defaultMeta());
+      setMeta(defaultMeta(newSessionId));
 
       return data.id;
     } catch (error) {
       console.error("Error starting conversation:", error);
       return null;
     }
-  };
+  }, [user]);
 
   // ==============================
   // Envío civilizatorio
@@ -95,49 +149,69 @@ export const useIsabella = () => {
     async (content: string, layer: TamvLayer = "COGNITIVE") => {
       if (!user) return;
 
+      const trimmed = content.trim();
+      if (!trimmed) return;
+
+      let currentConversationId = conversationId;
+      if (!currentConversationId) {
+        currentConversationId = await startConversation();
+        if (!currentConversationId) return;
+      }
+
       setLoading(true);
+
+      const isCreator = isCreatorMessage(trimmed);
+      const now = new Date().toISOString();
 
       const userMeta: IsabellaMeta = {
         ...meta,
+        sessionId: sessionIdRef.current,
         layer,
+        isCreator,
       };
 
       const userMessage: IsabellaMessage = {
         id: crypto.randomUUID(),
         role: "user",
-        content,
+        content: trimmed,
         meta: userMeta,
-        created_at: new Date().toISOString(),
+        created_at: now,
       };
 
       setMessages((prev) => [...prev, userMessage]);
 
       try {
-        const response = await supabase.functions.invoke("isabella-chat", {
+        const history = [...messages, userMessage]
+          .slice(-12)
+          .map((m) => ({
+            role: m.role,
+            content: m.content,
+            layer: m.meta.layer,
+          }));
+
+        const { data, error } = await supabase.functions.invoke("isabella-chat", {
           body: {
-            message: content,
-            conversationId,
+            message: trimmed,
+            conversationId: currentConversationId,
             layer,
-            sessionId: meta.sessionId,
-            history: messages.slice(-12).map((m) => ({
-              role: m.role,
-              content: m.content,
-              layer: m.meta.layer,
-            })),
+            sessionId: sessionIdRef.current,
+            history,
+            meta: { isCreator },
+            style: ISABELLA_STYLE,
           },
         });
 
-        if (response.error) throw response.error;
+        if (error) throw error;
 
-        const serverMeta: IsabellaMeta = response.data.meta ?? {
-          ...meta,
-          layer,
+        const serverMeta: IsabellaMeta = {
+          ...userMeta,
+          ...(data?.meta ?? {}),
         };
 
         const assistantMessage: IsabellaMessage = {
           id: crypto.randomUUID(),
-          role: response.data.role ?? "assistant",
-          content: response.data.message,
+          role: (data?.role as IsabellaMessage["role"]) ?? "assistant",
+          content: sanitizeAssistantMessage(data?.message),
           meta: serverMeta,
           created_at: new Date().toISOString(),
         };
@@ -147,49 +221,62 @@ export const useIsabella = () => {
       } catch (error) {
         console.error("Error sending message:", error);
 
-        const failMeta: IsabellaMeta = {
+        const infraFailMeta: IsabellaMeta = {
           ...meta,
-          ethicalState: "critical",
-          riskLevel: "high",
+          sessionId: sessionIdRef.current,
         };
 
         const errorMessage: IsabellaMessage = {
           id: crypto.randomUUID(),
           role: "assistant",
           content:
-            "La transmisión fue interrumpida por el subsistema de seguridad civilizatoria. Intenta nuevamente.",
-          meta: failMeta,
+            "La transmisión fue interrumpida por un fallo de infraestructura. Ninguna decisión civilizatoria ha sido tomada.",
+          meta: infraFailMeta,
           created_at: new Date().toISOString(),
         };
 
-        setMeta(failMeta);
         setMessages((prev) => [...prev, errorMessage]);
       } finally {
         setLoading(false);
       }
     },
-    [user, conversationId, messages, meta]
+    [user, conversationId, meta, messages, startConversation]
   );
 
-  const approveAsGuardian = async (messageId: string) => {
+  // ==============================
+  // Humano en loop (base)
+  // ==============================
+
+  const approveAsGuardian = useCallback(async (messageId: string) => {
     setMessages((prev) =>
       prev.map((m) =>
         m.id === messageId
           ? {
               ...m,
               role: "human_guardian",
-              meta: { ...m.meta, hitlRequired: false, governanceFlag: "none" },
+              meta: {
+                ...m.meta,
+                hitlRequired: false,
+                governanceFlag: "none",
+              },
             }
           : m
       )
     );
-  };
+  }, []);
 
-  const clearConversation = () => {
+  // ==============================
+  // Limpieza
+  // ==============================
+
+  const clearConversation = useCallback(() => {
+    const newSessionId = createSessionId();
+    sessionIdRef.current = newSessionId;
+
     setMessages([]);
     setConversationId(null);
-    setMeta(defaultMeta());
-  };
+    setMeta(defaultMeta(newSessionId));
+  }, []);
 
   return {
     messages,
