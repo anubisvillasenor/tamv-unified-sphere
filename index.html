@@ -1,26 +1,100 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- TODO: Set the document title to the name of your application -->
-    <title>Lovable App</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+<html lang="en" data-civilization="TAMV" data-layer="experience">
 
-    <!-- TODO: Update og:title to match your application name -->
-    <meta property="og:title" content="Lovable App" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+<head>
+  <!-- =========================================================
+       CORE META
+  ========================================================== -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Lovable" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+  <title>TAMV Online — Autonomous Territory of Living Memory</title>
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <meta name="description"
+        content="TAMV Online is a sovereign digital civilization platform integrating social networks, metaverse experiences, ethical AI, immutable memory (BookPI) and digital governance under a 7-layer federated protocol." />
+
+  <meta name="keywords"
+        content="TAMV, digital civilization, metaverse, ethical AI, sovereign identity, BookPI, digital governance, XR, federated protocol, Web3 ethics, civilizational platform" />
+
+  <meta name="author" content="TAMV Civilizational Collective" />
+  <meta name="generator" content="TAMV Protocol Stack v8" />
+  <meta name="application-name" content="TAMV Online" />
+
+  <!-- =========================================================
+       SECURITY & TRUST
+  ========================================================== -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' https: data:; media-src 'self' https:; connect-src 'self' https: wss:; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none';" />
+
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="color-scheme" content="dark light" />
+
+  <!-- =========================================================
+       CIVILIZATIONAL IDENTITY
+  ========================================================== -->
+  <meta name="tamv:constitution" content="BookPI-v1" />
+  <meta name="tamv:protocol" content="7-layer-federated" />
+  <meta name="tamv:ai-core" content="Isabella Villaseñor AI" />
+  <meta name="tamv:digital-dignity" content="enforced" />
+  <meta name="tamv:memory-model" content="immutable" />
+
+  <!-- =========================================================
+       OPEN GRAPH (SOCIAL / FEDERATION)
+  ========================================================== -->
+  <meta property="og:title" content="TAMV Online — Digital Sovereign Civilization" />
+  <meta property="og:description"
+        content="Where memory limits power and dignity defines what technology may become. A sovereign platform for social networks, metaverse, governance and ethical AI." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="TAMV Online" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:image" content="/assets/og/tamv-civilization.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- =========================================================
+       TWITTER / X
+  ========================================================== -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="TAMV Online — Autonomous Territory of Living Memory" />
+  <meta name="twitter:description"
+        content="A sovereign digital civilization integrating metaverse, ethical AI, immutable memory and digital governance." />
+  <meta name="twitter:image" content="/assets/og/tamv-civilization.jpg" />
+
+  <!-- =========================================================
+       PWA / XR READY
+  ========================================================== -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#05070c" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="TAMV Online" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <!-- =========================================================
+       PERFORMANCE
+  ========================================================== -->
+  <link rel="preconnect" href="https://api.tamv.world" />
+  <link rel="dns-prefetch" href="https://api.tamv.world" />
+
+  <!-- =========================================================
+       FAVICONS
+  ========================================================== -->
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-180.png" />
+
+</head>
+
+<body>
+  <noscript>
+    TAMV Online requires JavaScript to operate as a sovereign digital civilization platform.
+  </noscript>
+
+  <div id="root" role="application" aria-label="TAMV Online Platform"></div>
+
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
