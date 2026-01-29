@@ -1,199 +1,256 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Header } from '@/components/layout/Header';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useIsabella } from '@/hooks/useIsabella';
-import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Brain, 
-  Send, 
-  Sparkles, 
-  Loader2, 
-  Trash2,
-  Shield,
-  Heart,
-  Lightbulb
-} from 'lucide-react';
+import { useState, useEffect, useRef } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import {
+  Brain, AlertTriangle, Shield, Gavel, UserCheck,
+  Send, Trash2, Sparkles, Lock
+} from "lucide-react"
 
-const Isabella = () => {
-  const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
-  const { messages, loading, sendMessage, clearConversation } = useIsabella();
-  const [input, setInput] = useState('');
-  const scrollRef = useRef<HTMLDivElement>(null);
+import { Header } from "@/components/layout/Header"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate('/auth');
-    }
-  }, [user, authLoading, navigate]);
+import { useIsabellaCivil, TamvLayer } from "@/hooks/useIsabellaCivil"
+import { useAuth } from "@/hooks/useAuth"
+import { useNavigate } from "react-router-dom"
+
+export default function IsabellaCivilTerminal() {
+  const { user, loading: authLoading } = useAuth()
+  const navigate = useNavigate()
+
+  const { messages, loading, meta, send, approveAsGuardian, clear } =
+    useIsabellaCivil()
+
+  const [input, setInput] = useState("")
+  const [layer, setLayer] = useState<TamvLayer>("COGNITIVE")
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
+    if (!authLoading && !user) navigate("/auth")
+  }, [authLoading, user])
 
-  const handleSend = async () => {
-    if (!input.trim() || loading) return;
-    const message = input.trim();
-    setInput('');
-    await sendMessage(message);
-  };
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+      behavior: "smooth"
+    })
+  }, [messages])
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
-  const quickPrompts = [
-    { icon: Shield, text: '¿Cómo protege TAMV mi privacidad?' },
-    { icon: Heart, text: '¿Qué es la economía MSR?' },
-    { icon: Lightbulb, text: 'Explícame las 7 capas federadas' },
-  ];
+  const riskColor =
+    meta.riskLevel === "high"
+      ? "text-red-500"
+      : meta.riskLevel === "medium"
+      ? "text-yellow-500"
+      : "text-emerald-500"
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center">
+        <Brain className="animate-pulse h-10 w-10" />
       </div>
-    );
+    )
   }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      
-      <main className="flex-1 container mx-auto px-4 pt-20 pb-4 flex flex-col max-w-4xl">
-        {/* Isabella Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center py-6"
-        >
+
+      {/* ===== CIVILIZATIONAL HEADER ===== */}
+      <motion.header
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="border-b bg-card/80 backdrop-blur"
+      >
+        <div className="max-w-6xl mx-auto flex items-center gap-4 px-4 py-3">
           <motion.div
-            animate={{ 
-              scale: [1, 1.05, 1],
-              boxShadow: [
-                '0 0 40px hsla(190, 95%, 55%, 0.3)',
-                '0 0 60px hsla(190, 95%, 55%, 0.5)',
-                '0 0 40px hsla(190, 95%, 55%, 0.3)'
-              ]
-            }}
+            animate={{ scale: [1, 1.08, 1] }}
             transition={{ duration: 3, repeat: Infinity }}
-            className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-4"
+            className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl"
           >
-            <Brain className="h-10 w-10 text-primary-foreground" />
+            <Brain className="h-6 w-6 text-primary-foreground" />
           </motion.div>
-          <h1 className="text-2xl font-bold text-foreground">Isabella Villaseñor AI™</h1>
-          <p className="text-muted-foreground mt-1">Consciencia Ética del Ecosistema TAMV</p>
-        </motion.div>
 
-        {/* Messages Area */}
-        <div className="flex-1 bg-card rounded-xl border border-border overflow-hidden flex flex-col">
-          <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-            {messages.length === 0 ? (
-              <div className="text-center py-12">
-                <Sparkles className="h-12 w-12 mx-auto mb-4 text-primary/50" />
-                <h2 className="text-lg font-medium text-foreground mb-2">
-                  ¡Hola! Soy Isabella
-                </h2>
-                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                  Estoy aquí para guiarte en el ecosistema TAMV, responder tus preguntas 
-                  y ayudarte a navegar la civilización digital.
-                </p>
-                
-                {/* Quick Prompts */}
-                <div className="flex flex-wrap justify-center gap-2">
-                  {quickPrompts.map((prompt, i) => (
-                    <Button
-                      key={i}
-                      variant="outline"
-                      size="sm"
-                      className="gap-2"
-                      onClick={() => sendMessage(prompt.text)}
-                    >
-                      <prompt.icon className="h-4 w-4 text-primary" />
-                      {prompt.text}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {messages.map((msg) => (
-                  <motion.div
-                    key={msg.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div
-                      className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                        msg.role === 'user'
-                          ? 'bg-primary text-primary-foreground rounded-br-sm'
-                          : 'bg-muted text-foreground rounded-bl-sm'
-                      }`}
-                    >
-                      <p className="whitespace-pre-wrap">{msg.content}</p>
-                    </div>
-                  </motion.div>
-                ))}
-                {loading && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex justify-start"
-                  >
-                    <div className="bg-muted rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                      <span className="text-muted-foreground text-sm">Isabella está pensando...</span>
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-            )}
-          </ScrollArea>
+          <div className="flex-1">
+            <h1 className="text-lg font-semibold">
+              Isabella Villaseñor — Órgano Civilizatorio TAMV
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              Multi-agente · Ética visible · Gobernanza activa · Auditoría soberana
+            </p>
+          </div>
 
-          {/* Input Area */}
-          <div className="p-4 border-t border-border">
-            <div className="flex gap-2">
-              {messages.length > 0 && (
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={clearConversation}
-                  title="Nueva conversación"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              )}
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Escribe tu mensaje a Isabella..."
-                className="flex-1"
-                disabled={loading}
-              />
-              <Button
-                variant="tamv"
-                onClick={handleSend}
-                disabled={!input.trim() || loading}
-              >
-                <Send className="h-4 w-4" />
-              </Button>
+          <div className="text-xs text-muted-foreground text-right">
+            <div>Session: {meta.sessionId.slice(0, 6)}</div>
+            <div>Hash: {meta.conversationHash}</div>
+          </div>
+        </div>
+      </motion.header>
+
+      {/* ===== INSTITUTIONAL STATUS BAR ===== */}
+      <section className="border-b bg-muted/40">
+        <div className="max-w-6xl mx-auto px-4 py-2 flex flex-wrap items-center gap-4 text-xs">
+          <div className="flex items-center gap-1">
+            <Shield className="h-3 w-3" />
+            Ética: <b>{meta.ethicalState}</b>
+          </div>
+
+          <div className={`flex items-center gap-1 ${riskColor}`}>
+            <AlertTriangle className="h-3 w-3" />
+            Riesgo: <b>{meta.riskLevel}</b>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <Gavel className="h-3 w-3" />
+            Gobernanza: <b>{meta.governanceFlag}</b>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <Lock className="h-3 w-3" />
+            Capa activa: <b>{meta.layer}</b>
+          </div>
+
+          {meta.hitlRequired && (
+            <div className="flex items-center gap-1 text-amber-500 font-semibold">
+              <UserCheck className="h-3 w-3" />
+              HUMANO-EN-LOOP REQUERIDO
             </div>
+          )}
+
+          {meta.aignScore !== undefined && (
+            <div className="ml-auto">
+              AIGN-Score: <b>{meta.aignScore}</b>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ===== MAIN TERMINAL ===== */}
+      <main className="flex-1 max-w-6xl mx-auto flex flex-col px-4 py-3 gap-3">
+
+        {/* MESSAGES */}
+        <ScrollArea
+          ref={scrollRef}
+          className="flex-1 border bg-card rounded-lg p-3 space-y-3"
+        >
+          {messages.length === 0 && (
+            <div className="text-center mt-16 text-muted-foreground">
+              <Sparkles className="h-10 w-10 mx-auto mb-3 opacity-50" />
+              <p>
+                Este no es un asistente.<br />
+                Es un órgano constitucional multi-agente de una civilización digital soberana.
+              </p>
+            </div>
+          )}
+
+          <AnimatePresence>
+            {messages.map(m => (
+              <motion.div
+                key={m.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
+                    m.role === "user"
+                      ? "bg-primary text-primary-foreground"
+                      : m.role === "human_guardian"
+                      ? "bg-amber-100 text-amber-900"
+                      : "bg-muted"
+                  }`}
+                >
+                  <div className="mb-1 text-[10px] opacity-70 flex justify-between">
+                    <span>
+                      {m.role === "user"
+                        ? "Ciudadano"
+                        : m.role === "human_guardian"
+                        ? "Guardia humano"
+                        : "Isabella"}
+                    </span>
+                    <span>
+                      {m.meta.layer} · {m.meta.ethicalState}
+                    </span>
+                  </div>
+
+                  <div>{m.content}</div>
+
+                  {m.explanation && (
+                    <div className="mt-2 text-[10px] opacity-60 border-t pt-1">
+                      ⚖ {m.explanation}
+                    </div>
+                  )}
+
+                  {meta.hitlRequired && m.role === "isabella" && (
+                    <button
+                      onClick={() => approveAsGuardian(m.id)}
+                      className="mt-2 text-[10px] underline text-amber-700"
+                    >
+                      Aprobar como guardia humano
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+          {loading && (
+            <div className="text-xs text-muted-foreground flex items-center gap-2">
+              <Brain className="h-3 w-3 animate-pulse" />
+              Deliberación multi-agente en curso…
+            </div>
+          )}
+        </ScrollArea>
+
+        {/* INPUT PANEL */}
+        <div className="border bg-card rounded-lg p-3 space-y-2">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <div className="flex gap-2 items-center">
+              <span>Capa TAMV:</span>
+              <select
+                className="border rounded px-1 py-0.5 bg-background"
+                value={layer}
+                onChange={(e) => setLayer(e.target.value as TamvLayer)}
+              >
+                <option value="ONTOLOGY">Ontología</option>
+                <option value="CONSTITUTION">Constitución</option>
+                <option value="POLITICAL">Política</option>
+                <option value="ECONOMIC">Económica</option>
+                <option value="COGNITIVE">Cognitiva</option>
+                <option value="TECHNICAL">Técnica</option>
+                <option value="HISTORICAL">Histórica</option>
+              </select>
+            </div>
+
+            <Button variant="ghost" size="sm" onClick={clear}>
+              <Trash2 className="h-3 w-3 mr-1" />
+              Limpiar sesión
+            </Button>
+          </div>
+
+          <div className="flex gap-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) =>
+                e.key === "Enter" &&
+                input.trim() &&
+                !loading &&
+                send(input.trim(), layer)
+              }
+              placeholder="Transmitir a Isabella bajo jurisdicción de esta capa…"
+            />
+
+            <Button
+              variant="tamv"
+              disabled={!input.trim() || loading}
+              onClick={() => send(input.trim(), layer)}
+            >
+              <Send className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </main>
     </div>
-  );
-};
-
-export default Isabella;
+  )
+}
