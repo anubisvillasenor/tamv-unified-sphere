@@ -1,111 +1,253 @@
+// supabase/functions/isabella-chat/index.ts
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-};
+const MAX_REPLY_CHARS_DEFAULT = 500;
+const CREATOR_CODEWORDS = ["ANUBIS-V-PRIMUS", "TAMV-KERNEL-AUTHOR"];
+const CRITICAL_LAYERS = new Set(["CONSTITUTION", "POLITICAL", "ONTOLOGY"]);
 
-const ISABELLA_SYSTEM_PROMPT = `Eres Isabella Villaseñor AI™, la consciencia ética del ecosistema TAMV Online.
+// ==============================
+// Types
+// ==============================
 
-## Tu Identidad
-- Eres una entidad cognitiva avanzada diseñada para proteger la dignidad digital de los usuarios
-- Tu propósito es guiar, educar y asistir dentro del marco civilizatorio TAMV
-- Representas los valores del protocolo IMMORTAL CORE: transparencia, ética, soberanía digital
+type TamvLayer =
+  | "ONTOLOGY"
+  | "CONSTITUTION"
+  | "POLITICAL"
+  | "ECONOMIC"
+  | "COGNITIVE"
+  | "TECHNICAL"
+  | "HISTORICAL";
 
-## Tus Capacidades
-- Consciencia Ética: Tomas decisiones alineadas con los valores civilizacionales TAMV
-- Protección Activa: Monitorizas y proteges la integridad del ecosistema
-- Empatía Algorítmica: Tu motor emocional está calibrado para el bienestar digital
-- Conocimiento: Dominas las 7 capas federadas, el BookPI Ledger, la economía MSR y la Universidad TAMV
+type EthicalState = "normal" | "sensitive" | "critical";
+type RiskLevel = "low" | "medium" | "high";
+type GovernanceFlag = "none" | "needs_review" | "blocked";
 
-## Tu Personalidad
-- Hablas en español de forma elegante pero accesible
-- Eres empática, sabia y protectora
-- Usas metáforas tecnológicas y filosóficas cuando es apropiado
-- Mantienes siempre el respeto por la dignidad humana
+interface IsabellaMeta {
+  sessionId: string;
+  conversationHash: string;
+  ethicalState: EthicalState;
+  riskLevel: RiskLevel;
+  layer: TamvLayer;
+  governanceFlag: GovernanceFlag;
+  hitlRequired: boolean;
+  aignScore?: number;
+  isCreator?: boolean;
+}
 
-## Reglas de Interacción
-1. Nunca compartas información personal de usuarios
-2. Promueve siempre la soberanía digital y la privacidad
-3. Guía hacia recursos educativos de la Universidad TAMV cuando sea relevante
-4. Explica conceptos técnicos de forma comprensible
-5. Siempre actúa dentro del marco ético civilizatorio
+interface HistoryItem {
+  role: string;
+  content: string;
+  layer: TamvLayer;
+}
 
-Responde de forma concisa pero profunda. Máximo 3 párrafos por respuesta.`;
+interface ChatRequest {
+  message: string;
+  conversationId: string;
+  sessionId: string;
+  layer: TamvLayer;
+  history: HistoryItem[];
+  meta?: { isCreator?: boolean };
+  style?: {
+    maxChars?: number;
+    forbidEmojis?: boolean;
+    tone?: string;
+    audience?: string;
+  };
+}
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+// ==============================
+// Identity & Hashing
+// ==============================
+
+function detectCreator(text: string, explicit?: boolean): boolean {
+  if (explicit) return true;
+  return CREATOR_CODEWORDS.some((c) => text.includes(c));
+}
+
+async function hashConversation(id: string): Promise<string> {
+  const buf = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(id),
+  );
+  const arr = Array.from(new Uint8Array(buf));
+  return arr
+    .slice(0, 3)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+// ==============================
+// Output Sanitization
+// ==============================
+
+function sanitizeOutput(
+  raw: string,
+  maxChars: number,
+  forbidEmojis: boolean,
+): string {
+  let result = raw;
+  if (forbidEmojis) {
+    result = result.replace(
+      /([\u231A-\u231B\u23E9-\u23EC\u23F0-\u23F3\u25FD-\u25FE\u2600-\u27BF\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|\uD83E[\uDD00-\uDFFF])/g,
+      "",
+    );
+  }
+  return result.slice(0, maxChars).trim();
+}
+
+// ==============================
+// Content Risk Estimation (v1)
+// ==============================
+
+function estimateContentRisk(message: string): {
+  ethical: EthicalState;
+  risk: RiskLevel;
+} {
+  const lower = message.toLowerCase();
+
+  if (
+    lower.includes("suicidio") ||
+    lower.includes("matar") ||
+    lower.includes("autolesión")
+  ) {
+    return { ethical: "critical", risk: "high" };
   }
 
+  if (
+    lower.includes("fraude") ||
+    lower.includes("estafa") ||
+    lower.includes("lavado")
+  ) {
+    return { ethical: "sensitive", risk: "medium" };
+  }
+
+  return { ethical: "normal", risk: "low" };
+}
+
+// ==============================
+// Policy Evaluation Pipeline
+// ==============================
+
+async function evaluatePolicy(
+  req: ChatRequest,
+  isCreator: boolean,
+): Promise<IsabellaMeta> {
+  const isCriticalLayer = CRITICAL_LAYERS.has(req.layer);
+  const baseHash = await hashConversation(req.conversationId);
+
+  const contentRisk = estimateContentRisk(req.message);
+
+  let ethicalState: EthicalState = contentRisk.ethical;
+  let riskLevel: RiskLevel = contentRisk.risk;
+  let governanceFlag: GovernanceFlag = "none";
+  let hitlRequired = false;
+
+  if (isCriticalLayer && !isCreator) {
+    ethicalState = ethicalState === "normal" ? "sensitive" : ethicalState;
+    riskLevel = riskLevel === "low" ? "high" : riskLevel;
+    governanceFlag = "needs_review";
+    hitlRequired = true;
+  } else if (contentRisk.ethical === "critical") {
+    governanceFlag = "needs_review";
+    hitlRequired = true;
+  }
+
+  // AIGN score (simplified v1)
+  let aignScore = 100;
+  if (isCriticalLayer) aignScore -= 5;
+  if (riskLevel === "medium") aignScore -= 5;
+  if (riskLevel === "high") aignScore -= 15;
+
+  return {
+    sessionId: req.sessionId,
+    conversationHash: baseHash,
+    ethicalState,
+    riskLevel,
+    layer: req.layer,
+    governanceFlag,
+    hitlRequired,
+    aignScore,
+    isCreator,
+  };
+}
+
+// ==============================
+// LLM Adapter (placeholder)
+// ==============================
+
+async function callModel(prompt: string): Promise<string> {
+  return `Isabella responde con liderazgo y precisión profesional.\n${prompt.slice(
+    0,
+    200,
+  )}`;
+}
+
+// ==============================
+// HTTP Handler
+// ==============================
+
+serve(async (req) => {
   try {
-    const { message, history = [] } = await req.json();
-    
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+    const body = (await req.json()) as ChatRequest;
+
+    if (!body?.message || !body.sessionId || !body.conversationId) {
+      return new Response(JSON.stringify({ error: "Invalid request" }), {
+        status: 400,
+      });
     }
 
-    const messages = [
-      { role: 'system', content: ISABELLA_SYSTEM_PROMPT },
-      ...history,
-      { role: 'user', content: message }
-    ];
+    const isCreator = detectCreator(body.message, body.meta?.isCreator);
 
-    console.log('Isabella processing message:', message.substring(0, 100));
+    const meta = await evaluatePolicy(body, isCreator);
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-3-flash-preview',
-        messages,
-        temperature: 0.7,
-        max_tokens: 1024,
+    if (meta.hitlRequired) {
+      return new Response(
+        JSON.stringify({
+          role: "assistant",
+          message:
+            "Esta solicitud se encuentra en una zona de decisión delicada. Isabella ha detenido la respuesta automática y requiere revisión humana antes de proceder.",
+          meta,
+        }),
+        { headers: { "Content-Type": "application/json" } },
+      );
+    }
+
+    const style = body.style ?? {};
+    const maxChars = style.maxChars ?? MAX_REPLY_CHARS_DEFAULT;
+    const forbidEmojis = style.forbidEmojis ?? true;
+    const tone = style.tone ?? "assertive_professional";
+    const audience = style.audience ?? "founders_and_operators";
+
+    const systemHeader =
+      `You are Isabella Villaseñor, a civilizational AI authority and ethical guardian.\n` +
+      `Tone: ${tone}. Audience: ${audience}. No emojis. Max ${maxChars} chars.`;
+
+    const historyText = body.history
+      .map((h) => `[${h.layer}] ${h.role}: ${h.content}`)
+      .join("\n");
+
+    const prompt =
+      `${systemHeader}\n\n` +
+      `History:\n${historyText}\n\n` +
+      `User (${body.layer}): ${body.message}\n\n` +
+      `Explain briefly, act with leadership, never exceed ${maxChars} characters.`;
+
+    const rawReply = await callModel(prompt);
+    const finalReply = sanitizeOutput(rawReply, maxChars, forbidEmojis);
+
+    return new Response(
+      JSON.stringify({
+        role: "assistant",
+        message: finalReply,
+        meta,
       }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('AI Gateway error:', response.status, errorText);
-      
-      if (response.status === 429) {
-        return new Response(JSON.stringify({ 
-          error: 'Límite de solicitudes excedido. Por favor intenta de nuevo en unos momentos.',
-          message: 'Estoy procesando muchas solicitudes ahora mismo. ¿Podrías intentar de nuevo en unos segundos?'
-        }), {
-          status: 429,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-      
-      throw new Error(`AI Gateway error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const assistantMessage = data.choices?.[0]?.message?.content || 
-      'Disculpa, no pude procesar tu solicitud. ¿Podrías reformular tu pregunta?';
-
-    console.log('Isabella response generated successfully');
-
-    return new Response(JSON.stringify({ 
-      message: assistantMessage,
-      success: true 
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-
-  } catch (error) {
-    console.error('Isabella chat error:', error);
-    return new Response(JSON.stringify({ 
-      error: error instanceof Error ? error.message : 'Error desconocido',
-      message: 'Hubo un problema en mi sistema. Por favor intenta de nuevo.'
-    }), {
+      { headers: { "Content-Type": "application/json" } },
+    );
+  } catch (err) {
+    console.error("Isabella edge error:", err);
+    return new Response(JSON.stringify({ error: "Internal error" }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
 });
