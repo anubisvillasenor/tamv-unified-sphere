@@ -43,10 +43,17 @@ const About = () => {
 
   const fetchTeamMembers = async () => {
     const { data } = await supabase
-      .from('team_members')
+      .from('team_info')
       .select('*')
-      .order('order_index');
-    if (data) setTeamMembers(data);
+      .order('display_order');
+    if (data) setTeamMembers(data.map(m => ({
+      id: m.id,
+      name: m.name,
+      title: m.role,
+      bio: m.bio || '',
+      photo_url: m.avatar_url,
+      is_founder: m.is_founder || false
+    })));
   };
 
   const founder = teamMembers.find(m => m.is_founder);

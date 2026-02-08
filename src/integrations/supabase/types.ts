@@ -497,6 +497,145 @@ export type Database = {
         }
         Relationships: []
       }
+      group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string | null
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string | null
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string | null
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_posts: {
+        Row: {
+          comment_count: number | null
+          content: string
+          created_at: string | null
+          group_id: string
+          id: string
+          is_approved: boolean | null
+          is_pinned: boolean | null
+          like_count: number | null
+          media_type: string | null
+          media_urls: string[] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          comment_count?: number | null
+          content: string
+          created_at?: string | null
+          group_id: string
+          id?: string
+          is_approved?: boolean | null
+          is_pinned?: boolean | null
+          like_count?: number | null
+          media_type?: string | null
+          media_urls?: string[] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          comment_count?: number | null
+          content?: string
+          created_at?: string | null
+          group_id?: string
+          id?: string
+          is_approved?: boolean | null
+          is_pinned?: boolean | null
+          like_count?: number | null
+          media_type?: string | null
+          media_urls?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_posts_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      groups: {
+        Row: {
+          avatar_url: string | null
+          category: string | null
+          cover_url: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_public: boolean | null
+          is_verified: boolean | null
+          member_count: number | null
+          name: string
+          owner_id: string
+          post_count: number | null
+          rules: string | null
+          slug: string
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          category?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          member_count?: number | null
+          name: string
+          owner_id: string
+          post_count?: number | null
+          rules?: string | null
+          slug: string
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          category?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          member_count?: number | null
+          name?: string
+          owner_id?: string
+          post_count?: number | null
+          rules?: string | null
+          slug?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       hashtags: {
         Row: {
           created_at: string | null
@@ -548,6 +687,63 @@ export type Database = {
           title?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      isabella_events: {
+        Row: {
+          aign_score: number | null
+          content: string | null
+          conversation_id: string
+          created_at: string | null
+          ethical_state: string | null
+          event_type: string
+          governance_flag: string | null
+          guardian_user_id: string | null
+          hitl_required: boolean | null
+          id: string
+          is_creator: boolean | null
+          layer: string
+          meta: Json | null
+          risk_level: string | null
+          role: string
+          session_id: string
+        }
+        Insert: {
+          aign_score?: number | null
+          content?: string | null
+          conversation_id: string
+          created_at?: string | null
+          ethical_state?: string | null
+          event_type: string
+          governance_flag?: string | null
+          guardian_user_id?: string | null
+          hitl_required?: boolean | null
+          id?: string
+          is_creator?: boolean | null
+          layer: string
+          meta?: Json | null
+          risk_level?: string | null
+          role: string
+          session_id: string
+        }
+        Update: {
+          aign_score?: number | null
+          content?: string | null
+          conversation_id?: string
+          created_at?: string | null
+          ethical_state?: string | null
+          event_type?: string
+          governance_flag?: string | null
+          guardian_user_id?: string | null
+          hitl_required?: boolean | null
+          id?: string
+          is_creator?: boolean | null
+          layer?: string
+          meta?: Json | null
+          risk_level?: string | null
+          role?: string
+          session_id?: string
         }
         Relationships: []
       }
@@ -752,6 +948,60 @@ export type Database = {
           },
         ]
       }
+      music_library: {
+        Row: {
+          album: string | null
+          artist: string | null
+          audio_url: string
+          bookpi_hash: string | null
+          cover_url: string | null
+          created_at: string | null
+          duration_seconds: number | null
+          genre: string | null
+          id: string
+          is_original: boolean | null
+          is_public: boolean | null
+          license: string | null
+          title: string
+          use_count: number | null
+          user_id: string | null
+        }
+        Insert: {
+          album?: string | null
+          artist?: string | null
+          audio_url: string
+          bookpi_hash?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          genre?: string | null
+          id?: string
+          is_original?: boolean | null
+          is_public?: boolean | null
+          license?: string | null
+          title: string
+          use_count?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          album?: string | null
+          artist?: string | null
+          audio_url?: string
+          bookpi_hash?: string | null
+          cover_url?: string | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          genre?: string | null
+          id?: string
+          is_original?: boolean | null
+          is_public?: boolean | null
+          license?: string | null
+          title?: string
+          use_count?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           content: string | null
@@ -931,6 +1181,165 @@ export type Database = {
         }
         Relationships: []
       }
+      reels: {
+        Row: {
+          bookpi_hash: string | null
+          caption: string | null
+          comment_count: number | null
+          created_at: string | null
+          duration_seconds: number | null
+          id: string
+          is_featured: boolean | null
+          is_public: boolean | null
+          like_count: number | null
+          music_title: string | null
+          music_url: string | null
+          share_count: number | null
+          thumbnail_url: string | null
+          updated_at: string | null
+          user_id: string
+          video_url: string
+          view_count: number | null
+        }
+        Insert: {
+          bookpi_hash?: string | null
+          caption?: string | null
+          comment_count?: number | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          id?: string
+          is_featured?: boolean | null
+          is_public?: boolean | null
+          like_count?: number | null
+          music_title?: string | null
+          music_url?: string | null
+          share_count?: number | null
+          thumbnail_url?: string | null
+          updated_at?: string | null
+          user_id: string
+          video_url: string
+          view_count?: number | null
+        }
+        Update: {
+          bookpi_hash?: string | null
+          caption?: string | null
+          comment_count?: number | null
+          created_at?: string | null
+          duration_seconds?: number | null
+          id?: string
+          is_featured?: boolean | null
+          is_public?: boolean | null
+          like_count?: number | null
+          music_title?: string | null
+          music_url?: string | null
+          share_count?: number | null
+          thumbnail_url?: string | null
+          updated_at?: string | null
+          user_id?: string
+          video_url?: string
+          view_count?: number | null
+        }
+        Relationships: []
+      }
+      streams: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          ended_at: string | null
+          id: string
+          is_monetized: boolean | null
+          peak_viewers: number | null
+          started_at: string | null
+          status: string | null
+          stream_key: string | null
+          stream_url: string | null
+          thumbnail_url: string | null
+          tips_msr: number | null
+          title: string
+          user_id: string
+          viewer_count: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          is_monetized?: boolean | null
+          peak_viewers?: number | null
+          started_at?: string | null
+          status?: string | null
+          stream_key?: string | null
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          tips_msr?: number | null
+          title: string
+          user_id: string
+          viewer_count?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          is_monetized?: boolean | null
+          peak_viewers?: number | null
+          started_at?: string | null
+          status?: string | null
+          stream_key?: string | null
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          tips_msr?: number | null
+          title?: string
+          user_id?: string
+          viewer_count?: number | null
+        }
+        Relationships: []
+      }
+      team_info: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          display_order: number | null
+          email: string | null
+          id: string
+          is_founder: boolean | null
+          linkedin_url: string | null
+          name: string
+          role: string
+          twitter_url: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          email?: string | null
+          id?: string
+          is_founder?: boolean | null
+          linkedin_url?: string | null
+          name: string
+          role: string
+          twitter_url?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          email?: string | null
+          id?: string
+          is_founder?: boolean | null
+          linkedin_url?: string | null
+          name?: string
+          role?: string
+          twitter_url?: string | null
+        }
+        Relationships: []
+      }
       team_members: {
         Row: {
           bio: string | null
@@ -967,6 +1376,42 @@ export type Database = {
           photo_url?: string | null
           title?: string
           twitter_url?: string | null
+        }
+        Relationships: []
+      }
+      tips: {
+        Row: {
+          amount_msr: number
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          from_user_id: string
+          id: string
+          is_anonymous: boolean | null
+          message: string | null
+          to_user_id: string
+        }
+        Insert: {
+          amount_msr: number
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          from_user_id: string
+          id?: string
+          is_anonymous?: boolean | null
+          message?: string | null
+          to_user_id: string
+        }
+        Update: {
+          amount_msr?: number
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          from_user_id?: string
+          id?: string
+          is_anonymous?: boolean | null
+          message?: string | null
+          to_user_id?: string
         }
         Relationships: []
       }
@@ -1112,12 +1557,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_stream_key: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      register_bookpi_event: {
+        Args: {
+          p_action: string
+          p_actor_id: string
+          p_data?: Json
+          p_entity_id: string
+          p_entity_type: string
+        }
+        Returns: string
       }
     }
     Enums: {
