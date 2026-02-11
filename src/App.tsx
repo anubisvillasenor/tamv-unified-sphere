@@ -16,6 +16,7 @@ import Reels from "./pages/Reels";
 import Streaming from "./pages/Streaming";
 import Groups from "./pages/Groups";
 import BookPI from "./pages/BookPI";
+import TamvaiApi from "./pages/TamvaiApi";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,7 +41,7 @@ const App = () => (
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/bookpi" element={<BookPI />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/tamvai" element={<TamvaiApi />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
