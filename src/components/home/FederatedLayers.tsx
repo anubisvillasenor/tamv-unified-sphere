@@ -1,20 +1,21 @@
 import { motion } from "framer-motion";
+import {
+  Server, Database, Shield, Layout, Rocket, Scale, Zap
+} from "lucide-react";
 
 const federatedLayers = [
-  { id: 0, name: "Infraestructura", color: "hsl(220, 40%, 30%)" },
-  { id: 1, name: "Identidad", color: "hsl(190, 95%, 55%)" },
-  { id: 2, name: "Experiencia XR", color: "hsl(200, 90%, 50%)" },
-  { id: 3, name: "Sistemas", color: "hsl(210, 85%, 55%)" },
-  { id: 4, name: "Inteligencia IA", color: "hsl(270, 80%, 60%)" },
-  { id: 5, name: "Economía", color: "hsl(42, 95%, 55%)" },
-  { id: 6, name: "Gobernanza", color: "hsl(32, 90%, 50%)" },
-  { id: 7, name: "Metacivilización", color: "hsl(0, 0%, 90%)" },
+  { id: 1, name: "Infraestructura", desc: "Hardware, nodos FAR++, fog/edge distribuido", icon: Server, color: "hsl(220, 40%, 45%)" },
+  { id: 2, name: "Datos & Lógica", desc: "Algoritmos, BBDD federadas, computación autónoma", icon: Database, color: "hsl(190, 95%, 55%)" },
+  { id: 3, name: "Seguridad", desc: "Anubis Sentinel, cifrado PQC, Zero-Trust", icon: Shield, color: "hsl(0, 72%, 55%)" },
+  { id: 4, name: "Interfaz", desc: "UX, capas visuales, CITEMESH HRO, XR/4D", icon: Layout, color: "hsl(270, 80%, 60%)" },
+  { id: 5, name: "Expansión", desc: "Escalabilidad, módulos nuevos, SDK", icon: Rocket, color: "hsl(210, 100%, 60%)" },
+  { id: 6, name: "Ética & Regulación", desc: "Compliance, GDPR, AI Act, LFPDPPP", icon: Scale, color: "hsl(42, 95%, 55%)" },
+  { id: 7, name: "Energía & Recursos", desc: "Sostenibilidad, gestión térmica DM-X4", icon: Zap, color: "hsl(150, 60%, 45%)" },
 ];
 
 export const FederatedLayers = () => {
   return (
     <section className="py-20 md:py-32 relative overflow-hidden">
-      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-tamv-surface/30 to-background" />
 
       <div className="container mx-auto px-4 relative z-10">
@@ -26,19 +27,19 @@ export const FederatedLayers = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            <span className="text-secondary">7 Capas</span>
-            <span className="text-foreground"> Federadas</span>
+            <span className="text-secondary">7 Federaciones</span>
+            <span className="text-foreground"> Soberanas</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Cada capa gobierna a las inferiores. Ninguna puede violar a las superiores.
-            Una arquitectura civilizacional verificable y auditable.
+            Arquitectura heptagonal. Cada federación es operativamente autónoma,
+            criptográfica y semánticamente acoplada a las demás mediante BookPI + MSR.
           </p>
         </motion.div>
 
-        {/* Layers Visualization */}
+        {/* Hexagonal Visual */}
         <div className="max-w-3xl mx-auto">
           <div className="relative">
-            {federatedLayers.slice().reverse().map((layer, index) => (
+            {federatedLayers.map((layer, index) => (
               <motion.div
                 key={layer.id}
                 initial={{ opacity: 0, x: -50 }}
@@ -55,31 +56,30 @@ export const FederatedLayers = () => {
                     borderColor: `${layer.color}40`,
                   }}
                 >
-                  {/* Layer Number */}
+                  {/* Layer Icon */}
                   <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg"
+                    className="w-10 h-10 rounded-lg flex items-center justify-center"
                     style={{
                       backgroundColor: `${layer.color}20`,
-                      color: layer.color,
                     }}
                   >
-                    {layer.id}
+                    <layer.icon className="w-5 h-5" style={{ color: layer.color }} />
                   </div>
 
-                  {/* Layer Name */}
+                  {/* Layer Info */}
                   <div className="flex-1">
                     <h3
                       className="font-semibold text-lg"
                       style={{ color: layer.color }}
                     >
-                      Capa {layer.id}
+                      Fed {layer.id}: {layer.name}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {layer.name}
+                      {layer.desc}
                     </p>
                   </div>
 
-                  {/* Indicator */}
+                  {/* Pulse Indicator */}
                   <motion.div
                     animate={{ opacity: [0.5, 1, 0.5] }}
                     transition={{ duration: 2, repeat: Infinity }}
