@@ -6,81 +6,90 @@
 @import "@fontsource/space-grotesk/500.css";
 @import "@fontsource/space-grotesk/700.css";
 
-/* TAMV Online Design System - Civilizational Digital Sovereign Platform */
+/* TAMV Online Design System - Civilizational Digital Sovereign Platform
+   Palette: Deep Black, Realistic Silver, Metallic Blue, Pearl White */
 
 @layer base {
   :root {
-    /* Core Background - Deep Space */
-    --background: 222 47% 5%;
-    --foreground: 210 40% 96%;
+    /* Core Background - Absolute Black */
+    --background: 0 0% 2%;
+    --foreground: 0 0% 95%;
 
-    /* Cards - Elevated Surfaces */
-    --card: 222 47% 8%;
-    --card-foreground: 210 40% 96%;
+    /* Cards - Obsidian Surfaces */
+    --card: 220 10% 5%;
+    --card-foreground: 0 0% 95%;
 
     /* Popover */
-    --popover: 222 47% 7%;
-    --popover-foreground: 210 40% 96%;
+    --popover: 220 10% 4%;
+    --popover-foreground: 0 0% 95%;
 
-    /* Primary - Quantum Cyan */
-    --primary: 190 95% 55%;
-    --primary-foreground: 222 47% 5%;
+    /* Primary - Metallic Blue */
+    --primary: 210 80% 58%;
+    --primary-foreground: 0 0% 2%;
 
-    /* Secondary - Civilization Gold */
-    --secondary: 42 95% 55%;
-    --secondary-foreground: 222 47% 5%;
+    /* Secondary - Realistic Silver */
+    --secondary: 210 8% 65%;
+    --secondary-foreground: 0 0% 2%;
 
     /* Muted */
-    --muted: 222 30% 15%;
-    --muted-foreground: 215 20% 55%;
+    --muted: 220 10% 10%;
+    --muted-foreground: 210 8% 50%;
 
-    /* Accent - Electric Blue */
-    --accent: 210 100% 60%;
-    --accent-foreground: 222 47% 5%;
+    /* Accent - Pearl White / Ice */
+    --accent: 210 30% 80%;
+    --accent-foreground: 0 0% 2%;
 
     /* Destructive */
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 98%;
 
     /* Borders */
-    --border: 222 30% 18%;
-    --input: 222 30% 15%;
-    --ring: 190 95% 55%;
+    --border: 210 10% 12%;
+    --input: 210 10% 10%;
+    --ring: 210 80% 58%;
 
     --radius: 0.75rem;
 
     /* TAMV Custom Tokens */
-    --tamv-glow: 190 95% 55%;
-    --tamv-gold: 42 95% 55%;
-    --tamv-deep: 222 47% 3%;
-    --tamv-surface: 222 40% 10%;
-    --tamv-glass: 222 40% 12%;
+    --tamv-glow: 210 80% 58%;
+    --tamv-silver: 210 8% 65%;
+    --tamv-deep: 0 0% 1%;
+    --tamv-surface: 220 10% 6%;
+    --tamv-glass: 220 10% 8%;
+    --tamv-pearl: 210 30% 90%;
+    --tamv-metallic: 210 50% 45%;
 
-    /* Layer Colors */
-    --layer-1: 190 95% 55%;   /* User - Cyan */
-    --layer-2: 270 95% 60%;   /* DevHub - Purple */
-    --layer-3: 42 95% 55%;    /* Security - Gold */
+    /* Federation Layer Colors */
+    --layer-infra: 210 80% 55%;
+    --layer-data: 200 70% 50%;
+    --layer-security: 210 8% 70%;
+    --layer-interface: 210 30% 80%;
+    --layer-expansion: 220 60% 60%;
+    --layer-ethics: 0 0% 85%;
+    --layer-energy: 200 50% 40%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(190, 95%, 55%) 0%, hsl(210, 100%, 60%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(42, 95%, 55%) 0%, hsl(32, 95%, 50%) 100%);
-    --gradient-quantum: linear-gradient(135deg, hsl(222, 47%, 8%) 0%, hsl(270, 50%, 15%) 50%, hsl(190, 40%, 10%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsla(190, 95%, 55%, 0.1) 0%, hsla(270, 50%, 60%, 0.05) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(210, 80%, 58%) 0%, hsl(210, 50%, 45%) 100%);
+    --gradient-silver: linear-gradient(135deg, hsl(210, 8%, 65%) 0%, hsl(210, 8%, 45%) 100%);
+    --gradient-pearl: linear-gradient(135deg, hsl(210, 30%, 90%) 0%, hsl(210, 30%, 70%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsla(210, 80%, 58%, 0.08) 0%, hsla(210, 8%, 65%, 0.04) 100%);
+    --gradient-matrix: linear-gradient(180deg, hsl(0, 0%, 2%) 0%, hsl(210, 20%, 4%) 50%, hsl(0, 0%, 2%) 100%);
 
     /* Shadows */
-    --shadow-glow: 0 0 40px hsla(190, 95%, 55%, 0.3);
-    --shadow-gold: 0 0 40px hsla(42, 95%, 55%, 0.3);
-    --shadow-elevated: 0 8px 32px hsla(0, 0%, 0%, 0.4);
+    --shadow-glow: 0 0 40px hsla(210, 80%, 58%, 0.25);
+    --shadow-silver: 0 0 30px hsla(210, 8%, 65%, 0.15);
+    --shadow-elevated: 0 8px 32px hsla(0, 0%, 0%, 0.6);
+    --shadow-pearl: 0 0 20px hsla(210, 30%, 90%, 0.1);
 
     /* Sidebar */
-    --sidebar-background: 222 47% 6%;
-    --sidebar-foreground: 210 40% 90%;
-    --sidebar-primary: 190 95% 55%;
-    --sidebar-primary-foreground: 222 47% 5%;
-    --sidebar-accent: 222 40% 12%;
-    --sidebar-accent-foreground: 210 40% 96%;
-    --sidebar-border: 222 30% 15%;
-    --sidebar-ring: 190 95% 55%;
+    --sidebar-background: 0 0% 3%;
+    --sidebar-foreground: 210 8% 85%;
+    --sidebar-primary: 210 80% 58%;
+    --sidebar-primary-foreground: 0 0% 2%;
+    --sidebar-accent: 220 10% 8%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 210 10% 10%;
+    --sidebar-ring: 210 80% 58%;
   }
 
   .dark {
@@ -100,26 +109,29 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Space Grotesk', system-ui, sans-serif;
-    background: 
-      radial-gradient(ellipse 80% 50% at 50% -20%, hsla(190, 95%, 55%, 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse 60% 40% at 100% 100%, hsla(270, 50%, 60%, 0.06) 0%, transparent 50%),
-      hsl(var(--background));
+    background: hsl(var(--background));
     min-height: 100vh;
   }
 }
 
 @layer utilities {
-  /* Glass Effect */
+  /* Glass Effect - Silver tinted */
   .glass {
-    background: hsla(222, 40%, 12%, 0.6);
-    backdrop-filter: blur(20px);
-    border: 1px solid hsla(190, 95%, 55%, 0.15);
+    background: hsla(220, 10%, 6%, 0.7);
+    backdrop-filter: blur(24px);
+    border: 1px solid hsla(210, 80%, 58%, 0.1);
   }
 
-  .glass-gold {
-    background: hsla(222, 40%, 12%, 0.6);
+  .glass-silver {
+    background: hsla(210, 8%, 10%, 0.5);
     backdrop-filter: blur(20px);
-    border: 1px solid hsla(42, 95%, 55%, 0.2);
+    border: 1px solid hsla(210, 8%, 65%, 0.15);
+  }
+
+  .glass-pearl {
+    background: hsla(210, 30%, 90%, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid hsla(210, 30%, 90%, 0.1);
   }
 
   /* Glow Effects */
@@ -127,23 +139,31 @@
     box-shadow: var(--shadow-glow);
   }
 
-  .glow-gold {
-    box-shadow: var(--shadow-gold);
+  .glow-silver {
+    box-shadow: var(--shadow-silver);
+  }
+
+  .glow-pearl {
+    box-shadow: var(--shadow-pearl);
   }
 
   .text-glow {
-    text-shadow: 0 0 20px hsla(190, 95%, 55%, 0.5);
+    text-shadow: 0 0 20px hsla(210, 80%, 58%, 0.5);
   }
 
-  .text-glow-gold {
-    text-shadow: 0 0 20px hsla(42, 95%, 55%, 0.5);
+  .text-glow-silver {
+    text-shadow: 0 0 15px hsla(210, 8%, 65%, 0.4);
+  }
+
+  .text-glow-pearl {
+    text-shadow: 0 0 25px hsla(210, 30%, 90%, 0.3);
   }
 
   /* Quantum Grid Background */
   .quantum-grid {
     background-image: 
-      linear-gradient(hsla(190, 95%, 55%, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, hsla(190, 95%, 55%, 0.03) 1px, transparent 1px);
+      linear-gradient(hsla(210, 80%, 58%, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, hsla(210, 80%, 58%, 0.03) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
@@ -158,15 +178,33 @@
     inset: -1px;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, hsl(190, 95%, 55%), transparent 50%, hsl(42, 95%, 55%));
+    background: linear-gradient(135deg, hsl(210, 80%, 58%), transparent 50%, hsl(210, 8%, 65%));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
   }
 
-  /* Layer Indicators */
-  .layer-1 { --layer-color: var(--layer-1); }
-  .layer-2 { --layer-color: var(--layer-2); }
-  .layer-3 { --layer-color: var(--layer-3); }
+  /* Metallic text */
+  .text-metallic {
+    background: linear-gradient(135deg, hsl(210, 30%, 90%), hsl(210, 8%, 65%), hsl(210, 30%, 80%));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Scanline effect */
+  .scanlines::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      hsla(210, 80%, 58%, 0.015) 2px,
+      hsla(210, 80%, 58%, 0.015) 4px
+    );
+    pointer-events: none;
+  }
 }

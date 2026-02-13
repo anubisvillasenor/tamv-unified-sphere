@@ -15,10 +15,10 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-muted hover:text-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        tamv: "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-lg hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98]",
-        tamvGold: "bg-gradient-to-r from-secondary to-[hsl(32,95%,50%)] text-secondary-foreground shadow-lg hover:shadow-secondary/30 hover:scale-[1.02] active:scale-[0.98]",
-        glass: "bg-[hsla(222,40%,12%,0.6)] backdrop-blur-xl border border-[hsla(190,95%,55%,0.15)] hover:bg-[hsla(222,40%,15%,0.8)] text-foreground hover:border-primary/40",
-        glassGold: "bg-[hsla(222,40%,12%,0.6)] backdrop-blur-xl border border-[hsla(42,95%,55%,0.2)] hover:bg-[hsla(222,40%,15%,0.8)] text-foreground hover:border-secondary/40",
+        tamv: "bg-gradient-to-r from-primary to-[hsl(210,50%,45%)] text-primary-foreground shadow-lg hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98]",
+        tamvSilver: "bg-gradient-to-r from-secondary to-[hsl(210,8%,50%)] text-secondary-foreground shadow-lg hover:shadow-secondary/20 hover:scale-[1.02] active:scale-[0.98]",
+        glass: "backdrop-blur-xl border text-foreground hover:border-primary/30",
+        glassGold: "backdrop-blur-xl border text-foreground hover:border-secondary/30",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -44,10 +44,19 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
+
+    // Apply glass styles inline for glass variants
+    const glassStyles = variant === "glass" 
+      ? { background: "hsla(220, 10%, 6%, 0.6)", borderColor: "hsla(210, 80%, 58%, 0.12)" }
+      : variant === "glassGold"
+      ? { background: "hsla(220, 10%, 6%, 0.6)", borderColor: "hsla(210, 8%, 65%, 0.15)" }
+      : undefined;
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        style={glassStyles}
         {...props}
       />
     );

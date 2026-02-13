@@ -248,7 +248,7 @@ const Gallery = () => {
                         </div>
                       </div>
                     </div>
-                    <Button variant="tamvGold" className="self-center">
+                    <Button variant="tamvSilver" className="self-center">
                       <Gavel className="h-4 w-4 mr-2" />
                       Pujar
                     </Button>
