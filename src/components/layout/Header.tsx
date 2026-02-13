@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Menu, X, Search, Bell, Home, MessageSquare, Users, Video,
-  Radio, GraduationCap, Palette, Brain, BookOpen, Shield,
-  LogOut, User, Wallet, TrendingUp, Cpu
+  Radio, GraduationCap, Palette, Brain, BookOpen,
+  LogOut, User, Cpu
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -36,15 +36,20 @@ export const Header = () => {
       <motion.header
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50"
+        className="fixed top-0 left-0 right-0 z-50"
+        style={{
+          background: "hsla(0, 0%, 2%, 0.85)",
+          backdropFilter: "blur(24px)",
+          borderBottom: "1px solid hsla(210, 10%, 12%, 0.5)",
+        }}
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-14">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 shrink-0">
               <img src={logoTamv} alt="TAMV" className="h-8 w-8 rounded-lg object-cover" />
-              <span className="hidden sm:block text-sm font-bold text-foreground">
-                TAMV <span className="text-primary">Online</span>
+              <span className="hidden sm:block text-sm font-bold">
+                <span className="text-metallic">TAMV</span>
               </span>
             </Link>
 
@@ -56,8 +61,8 @@ export const Header = () => {
                   to={item.path}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                     isActive(item.path)
-                      ? "bg-primary/15 text-primary border border-primary/30"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      ? "bg-primary/10 text-primary border border-primary/20"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
                   }`}
                 >
                   <item.icon className="w-3.5 h-3.5" />
@@ -123,7 +128,12 @@ export const Header = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="fixed top-14 left-0 right-0 z-40 glass border-b border-border/50 lg:hidden"
+            className="fixed top-14 left-0 right-0 z-40 lg:hidden"
+            style={{
+              background: "hsla(0, 0%, 2%, 0.95)",
+              backdropFilter: "blur(24px)",
+              borderBottom: "1px solid hsla(210, 10%, 12%, 0.5)",
+            }}
           >
             <nav className="container mx-auto px-4 py-3 grid grid-cols-3 gap-2">
               {NAV_ITEMS.map((item) => (
@@ -133,8 +143,8 @@ export const Header = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex flex-col items-center gap-1 px-2 py-2.5 rounded-lg text-[10px] font-medium transition-all ${
                     isActive(item.path)
-                      ? "bg-primary/15 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
                   }`}
                 >
                   <item.icon className="w-4 h-4" />

@@ -52,15 +52,12 @@ export default {
         },
         tamv: {
           glow: "hsl(var(--tamv-glow))",
-          gold: "hsl(var(--tamv-gold))",
+          silver: "hsl(var(--tamv-silver))",
           deep: "hsl(var(--tamv-deep))",
           surface: "hsl(var(--tamv-surface))",
           glass: "hsl(var(--tamv-glass))",
-        },
-        layer: {
-          1: "hsl(var(--layer-1))",
-          2: "hsl(var(--layer-2))",
-          3: "hsl(var(--layer-3))",
+          pearl: "hsl(var(--tamv-pearl))",
+          metallic: "hsl(var(--tamv-metallic))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -99,6 +96,10 @@ export default {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        "matrix-fall": {
+          "0%": { transform: "translateY(-100%)", opacity: "1" },
+          "100%": { transform: "translateY(100vh)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -106,6 +107,7 @@ export default {
         "pulse-glow": "pulse-glow 3s ease-in-out infinite",
         "float": "float 6s ease-in-out infinite",
         "shimmer": "shimmer 3s linear infinite",
+        "matrix-fall": "matrix-fall var(--duration, 8s) linear infinite",
       },
     },
   },
