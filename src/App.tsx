@@ -17,6 +17,7 @@ import Streaming from "./pages/Streaming";
 import Groups from "./pages/Groups";
 import BookPI from "./pages/BookPI";
 import TamvaiApi from "./pages/TamvaiApi";
+import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/messages" element={<Messages />} />
             <Route path="/bookpi" element={<BookPI />} />
             <Route path="/tamvai" element={<TamvaiApi />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
